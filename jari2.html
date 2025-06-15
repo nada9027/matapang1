@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>랜덤 자리 배정</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom font for a clean look */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container bg-white p-8 rounded-xl shadow-lg w-full max-w-md mx-auto my-8">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">랜덤 자리 배정</h1>
+
+        <div class="space-y-4 mb-6">
+            <!-- Student 1 Input -->
+            <div>
+                <label for="student1" class="block text-sm font-medium text-gray-700 mb-1">학생 1 이름:</label>
+                <input type="text" id="student1" value="김민수" placeholder="예: 김민수"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+            </div>
+            <!-- Student 2 Input -->
+            <div>
+                <label for="student2" class="block text-sm font-medium text-gray-700 mb-1">학생 2 이름:</label>
+                <input type="text" id="student2" value="이서연" placeholder="예: 이서연"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+            </div>
+            <!-- Student 3 Input -->
+            <div>
+                <label for="student3" class="block text-sm font-medium text-gray-700 mb-1">학생 3 이름:</label>
+                <input type="text" id="student3" value="박준혁" placeholder="예: 박준혁"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+            </div>
+        </div>
+
+        <!-- Assign Button -->
+        <button id="assignButton"
+                class="w-full bg-blue-600 text-white py-3 px-4 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150 text-lg font-semibold">
+            자리 배정하기
+        </button>
+
+        <!-- Results Display Area -->
+        <div id="results" class="mt-8 p-6 bg-blue-50 rounded-lg border border-blue-200 shadow-inner">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4 text-center">배정 결과:</h2>
+            <ul class="space-y-3 text-lg text-gray-800">
+                <!-- Results will be displayed here by JavaScript -->
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const studentInputs = [
+                document.getElementById('student1'),
+                document.getElementById('student2'),
+                document.getElementById('student3')
+            ];
+            const assignButton = document.getElementById('assignButton');
+            const resultsDiv = document.querySelector('#results ul');
+
+            // Function to shuffle an array (Fisher-Yates algorithm)
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+                }
+            }
+
+            // Event listener for the assign button
+            assignButton.addEventListener('click', () => {
+                let students = [];
+                // Get student names from input fields
+                studentInputs.forEach(input => {
+                    const name = input.value.trim();
+                    if (name) {
+                        students.push(name);
+                    }
+                });
+
+                // Check if exactly 3 students are entered
+                if (students.length !== 3) {
+                    resultsDiv.innerHTML = '<li class="text-red-600 text-center">학생 이름을 정확히 3명 입력해주세요!</li>';
+                    return;
+                }
+
+                // Shuffle the students array
+                shuffleArray(students);
+
+                // Define seats
+                const seats = ['자리 1', '자리 2', '자리 3'];
+
+                // Clear previous results
+                resultsDiv.innerHTML = '';
+
+                // Display the assigned seats
+                students.forEach((student, index) => {
+                    const listItem = document.createElement('li');
+                    listItem.className = 'flex justify-between items-center bg-white p-3 rounded-md shadow-sm';
+                    listItem.innerHTML = `
+                        <span class="font-medium text-blue-700">${student}</span>
+                        <span class="text-gray-600">➡️</span>
+                        <span class="font-semibold text-green-700">${seats[index]}</span>
+                    `;
+                    resultsDiv.appendChild(listItem);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
